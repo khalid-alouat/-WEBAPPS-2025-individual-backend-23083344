@@ -1,6 +1,14 @@
 {
   "motoren": [
     {
+      "id": "1",
+      "naam": "Kawasaki Ninja ZX-10R",
+      "bouwjaar": 2020,
+      "merk": "Kawasaki",
+      "afbeelding": "images/kawasaki_logo.jpg",
+      "alt": "Kawasaki logo"
+    },
+    {
       "id": "2",
       "naam": "Yamaha YZF-R1",
       "bouwjaar": 2019,
@@ -97,12 +105,12 @@
       "alt": "Kawasaki logo"
     },
     {
-      "id": "1",
-      "naam": "Kawasaki Ninja ZX-10R",
-      "bouwjaar": 2020,
-      "merk": "Kawasaki",
-      "afbeelding": "images/kawasaki_logo.jpg",
-      "alt": "Kawasaki logo"
+      "naam": "Suzuki V-Strom",
+      "bouwjaar": 2022,
+      "merk": "Suzuki",
+      "afbeelding": "images/dummy.jpg",
+      "alt": "Suzuki logo",
+      "id": "6b31"
     }
   ]
 }

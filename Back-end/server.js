@@ -1,12 +1,44 @@
 const express = require('express');
 const cors = require('cors');
-const motoren = require('./db.json').motoren;
+const { Sequelize, DataTypes } = require('sequelize');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Sequelize setup
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: './database.sqlite'
+});
+
+// Motor-model
+const Motor = sequelize.define('Motor', {
+    naam: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    bouwjaar: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    merk: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    afbeelding: {
+        type: DataTypes.STRING,
+        defaultValue: 'images/dummy.jpg'
+    },
+    alt: {
+        type: DataTypes.STRING
+    }
+});
+
+// sync model met database
+sequelize.sync();
 
 // Swagger configuratie
 const swaggerOptions = {
@@ -15,20 +47,16 @@ const swaggerOptions = {
         info: {
             title: 'Motoren API',
             version: '1.0.0',
-            description: 'API voor het beheren van motoren'
+            description: 'API voor het beheren van motoren met Sequelize'
         },
         servers: [
-            {
-                url: 'http://localhost:4000'
-            }
+            { url: 'http://localhost:4000' }
         ]
     },
     apis: ['./server.js']
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-
-// Swagger UI endpoint
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 /**
@@ -90,8 +118,13 @@ app.get('/', (req, res) => {
  *               items:
  *                 $ref: '#/components/schemas/Motor'
  */
-app.get('/motoren', (req, res) => {
-    res.json(motoren);
+app.get('/motoren', async (req, res) => {
+    try {
+        const motoren = await Motor.findAll();
+        res.json(motoren);
+    } catch (error) {
+        res.status(500).json({ error: 'Fout bij ophalen motoren' });
+    }
 });
 
 /**
@@ -116,9 +149,17 @@ app.get('/motoren', (req, res) => {
  *       404:
  *         description: Motor niet gevonden
  */
-app.get('/motoren/:id', (req, res) => {
-    const motor = motoren.find(m => m.id === parseInt(req.params.id));
-    motor ? res.json(motor) : res.status(404).json({ error: 'Motor niet gevonden' });
+app.get('/motoren/:id', async (req, res) => {
+    try {
+        const motor = await Motor.findByPk(req.params.id);
+        if (motor) {
+            res.json(motor);
+        } else {
+            res.status(404).json({ error: 'Motor niet gevonden' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Fout bij ophalen motor' });
+    }
 });
 
 /**
@@ -140,10 +181,13 @@ app.get('/motoren/:id', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Motor'
  */
-app.post('/motoren', (req, res) => {
-    const nieuweMotor = { id: motoren.length + 1, ...req.body };
-    motoren.push(nieuweMotor);
-    res.status(201).json(nieuweMotor);
+app.post('/motoren', async (req, res) => {
+    try {
+        const nieuweMotor = await Motor.create(req.body);
+        res.status(201).json(nieuweMotor);
+    } catch (error) {
+        res.status(500).json({ error: 'Fout bij toevoegen motor' });
+    }
 });
 
 /**
@@ -174,13 +218,17 @@ app.post('/motoren', (req, res) => {
  *       404:
  *         description: Motor niet gevonden
  */
-app.put('/motoren/:id', (req, res) => {
-    const motor = motoren.find(m => m.id === parseInt(req.params.id));
-    if (motor) {
-        Object.assign(motor, req.body);
-        res.json(motor);
-    } else {
-        res.status(404).json({ error: 'Motor niet gevonden' });
+app.put('/motoren/:id', async (req, res) => {
+    try {
+        const motor = await Motor.findByPk(req.params.id);
+        if (motor) {
+            await motor.update(req.body);
+            res.json(motor);
+        } else {
+            res.status(404).json({ error: 'Motor niet gevonden' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Fout bij updaten motor' });
     }
 });
 
@@ -202,16 +250,22 @@ app.put('/motoren/:id', (req, res) => {
  *       404:
  *         description: Motor niet gevonden
  */
-app.delete('/motoren/:id', (req, res) => {
-    const index = motoren.findIndex(m => m.id === parseInt(req.params.id));
-    if (index >= 0) {
-        motoren.splice(index, 1);
-        res.status(204).send();
-    } else {
-        res.status(404).json({ error: 'Motor niet gevonden' });
+app.delete('/motoren/:id', async (req, res) => {
+    try {
+        const motor = await Motor.findByPk(req.params.id);
+        if (motor) {
+            await motor.destroy();
+            res.status(204).send();
+        } else {
+            res.status(404).json({ error: 'Motor niet gevonden' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Fout bij verwijderen motor' });
     }
 });
 
 app.listen(4000, () => {
     console.log('Express API draait op http://localhost:4000');
 });
+
+module.exports = { sequelize, Motor };

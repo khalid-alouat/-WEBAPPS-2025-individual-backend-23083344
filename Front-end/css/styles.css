@@ -1,0 +1,129 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
+  
+  header {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0.5em;
+    display: flex;
+    justify-content: center;
+  }
+  
+  nav ul li {
+    margin: 0 1em;
+  }
+  
+  nav ul li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  main {
+    padding: 1em;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .motor-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    justify-content: center;
+  }
+  
+  .motor-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 300px;
+    padding: 1em;
+    text-align: center;
+    background-color: #f9f9f9;
+  }
+  
+  .motor-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+  
+  /* Paginanavigatie */
+  .pagination {
+    margin-top: 1em;
+    text-align: center;
+  }
+  
+  .pagination button {
+    margin: 0 0.25em;
+    padding: 0.5em 1em;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  
+  .pagination button:hover {
+    background-color: #555;
+  }
+  
+  /* Sorteer- en filterelementen */
+  .sort-controls, .filter-controls {
+    margin: 1em 0;
+    text-align: center;
+  }
+  
+  .sort-controls button,
+  .filter-controls select {
+    padding: 0.5em 1em;
+    margin: 0 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  form {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .form-field {
+    margin-bottom: 1em;
+  }
+  
+  .form-field label {
+    display: block;
+    margin-bottom: 0.5em;
+  }
+  
+  .form-field input {
+    width: 100%;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  @media (max-width: 600px) {
+    nav ul {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .motor-container {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  

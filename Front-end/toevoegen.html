@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motorverzameling – Item Toevoegen</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="overzicht.html">Overzicht</a></li>
+        <li><a href="toevoegen.html">Item Toevoegen</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Voeg een motor toe</h1>
+    <form id="add-motor-form">
+      <div class="form-field">
+        <label for="naam">Naam:</label>
+        <input type="text" id="naam" name="naam" required>
+      </div>
+      <div class="form-field">
+        <label for="bouwjaar">Bouwjaar:</label>
+        <input type="number" id="bouwjaar" name="bouwjaar" required>
+      </div>
+      <div class="form-field">
+        <label for="merk">Merk:</label>
+        <input type="text" id="merk" name="merk" required>
+      </div>
+
+      <button type="submit">Voeg toe</button>
+    </form>
+    <div id="form-message"></div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

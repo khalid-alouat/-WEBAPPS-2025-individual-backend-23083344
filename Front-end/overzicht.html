@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motorverzameling – Overzicht</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="overzicht.html">Overzicht</a></li>
+        <li><a href="toevoegen.html">Item Toevoegen</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Overzicht Motoren</h1>
+
+    <div class="sort-controls">
+      <button id="sort-asc">Sorteer Oplopend</button>
+      <button id="sort-desc">Sorteer Aflopend</button>
+    </div>
+
+    <div class="filter-controls">
+      <label for="filter-merk">Filter op merk:</label>
+      <select id="filter-merk">
+        <option value="all">Alle merken</option>
+        <option value="Kawasaki">Kawasaki</option>
+        <option value="Yamaha">Yamaha</option>
+      </select>
+    </div>
+
+    <div id="motor-container" class="motor-container"></div>
+
+    <div id="pagination" class="pagination"></div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

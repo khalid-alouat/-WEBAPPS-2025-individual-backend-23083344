@@ -1,23 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
-  function saveMotoren() {
-    localStorage.setItem('motoren', JSON.stringify(motoren));
-    console.log("Motoren opgeslagen in localStorage.");
+  /**
+   * Motoren opnieuw ophalen om de lijst te verversen
+   */
+  function refreshMotoren() {
+    fetch('http://localhost:4000/motoren')
+      .then(response => response.json())
+      .then(data => {
+        motoren = data;
+        renderItems(motoren);
+        renderPagination(motoren);
+      })
+      .catch(error => console.error('Fout bij ophalen motoren:', error));
   }
 
-  const opgeslagenMotoren = localStorage.getItem('motoren');
-  if (opgeslagenMotoren) {
-    motoren.length = 0;
-    JSON.parse(opgeslagenMotoren).forEach(item => motoren.push(item));
-    console.log("Opgeslagen motoren geladen uit localStorage.");
-  }
-
+  /**
+   * Sorteer motoren oplopend op naam
+   */
   function sortMotorenAsc() {
     const selectedMerk = document.getElementById('filter-merk') ? document.getElementById('filter-merk').value : 'all';
-    let sortedList;
+    let sortedList = motoren;
     if (selectedMerk !== 'all') {
       sortedList = motoren.filter(item => item.merk === selectedMerk);
-    } else {
-      sortedList = [...motoren];
     }
     sortedList.sort((a, b) => a.naam.localeCompare(b.naam));
     currentPage = 1;
@@ -25,20 +28,20 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPagination(sortedList);
   }
 
+  /**
+   * Sorteer motoren aflopend op naam
+   */
   function sortMotorenDesc() {
     const selectedMerk = document.getElementById('filter-merk') ? document.getElementById('filter-merk').value : 'all';
-    let sortedList;
+    let sortedList = motoren;
     if (selectedMerk !== 'all') {
       sortedList = motoren.filter(item => item.merk === selectedMerk);
-    } else {
-      sortedList = [...motoren];
     }
     sortedList.sort((a, b) => b.naam.localeCompare(a.naam));
     currentPage = 1;
     renderItems(sortedList);
     renderPagination(sortedList);
   }
-
 
   const sortAscBtn = document.getElementById('sort-asc');
   if (sortAscBtn) {
@@ -50,14 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
     sortDescBtn.addEventListener('click', sortMotorenDesc);
   }
 
+  /**
+   * Filtering motoren op geselecteerd merk
+   */
   function filterMotoren() {
     const selectedMerk = document.getElementById('filter-merk').value;
     let filteredMotoren = motoren;
-
     if (selectedMerk !== 'all') {
       filteredMotoren = motoren.filter(item => item.merk === selectedMerk);
     }
-
     currentPage = 1;
     renderItems(filteredMotoren);
     renderPagination(filteredMotoren);
@@ -68,6 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
     filterSelect.addEventListener('change', filterMotoren);
   }
 
+  /**
+   * Toevoegen nieuwe motor via de API (op de pagina "toevoegen.html")
+   */
   const addMotorForm = document.getElementById('add-motor-form');
   if (addMotorForm) {
     addMotorForm.addEventListener('submit', function (e) {
@@ -85,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const nieuwItem = {
-        id: motoren.length + 1,
         naam: naam,
         bouwjaar: bouwjaar,
         merk: merk,
@@ -93,21 +99,21 @@ document.addEventListener('DOMContentLoaded', () => {
         alt: naam
       };
 
-      motoren.push(nieuwItem);
-      console.log("Nieuw item toegevoegd:", nieuwItem);
-
-      saveMotoren();
-
-      document.getElementById('form-message').textContent = 'Motor is toegevoegd!';
-
-      if (!document.getElementById('motor-container')) {
-        setTimeout(() => {
-          window.location.href = "overzicht.html";
-        }, 500);
-      } else {
-        renderItems();
-        renderPagination();
-      }
+      // Verstuur POST-request naar de backend API
+      fetch('http://localhost:4000/motoren', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(nieuwItem)
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Nieuw item toegevoegd:", data);
+          document.getElementById('form-message').textContent = 'Motor is toegevoegd!';
+          refreshMotoren();
+        })
+        .catch(error => console.error('Fout bij toevoegen motor:', error));
 
       addMotorForm.reset();
     });
